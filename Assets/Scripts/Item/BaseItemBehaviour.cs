@@ -87,20 +87,5 @@ namespace Item
             circleCollider.offset = circleColliderInfo.offset;
             circleCollider.radius = circleColliderInfo.radius;
         }
-
-        public void ClearItem()
-        {
-            // Destroy all the colliders
-            foreach (var col in GetComponentsInChildren<Collider2D>())
-            {
-                DestroyImmediate(col.gameObject);
-            }
-
-            // Destroy all the joints
-            foreach (var joint in GetComponents<HingeJoint2D>())
-            {
-                DestroyImmediate(joint);
-            }
-        }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Item;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,6 +7,9 @@ public class Game : MonoBehaviour
 {
     private List<ScrewBag> screwBags;
     private ScrewLine spareScrewLine;
+
+    private readonly RaycastHit2D[] rayHits = new RaycastHit2D[1];
+    private readonly RaycastHit2D[] circleHits = new RaycastHit2D[1];
 
     public static Game Instance { get; private set; }
 
@@ -75,5 +79,44 @@ public class Game : MonoBehaviour
             var spareCount = spareScrewLine.TakeScrew(newColor);
             screwBag.PutScrew(spareCount);
         }
+    }
+
+    private void Update()
+    {
+        // left mouse button down
+        if (Input.GetMouseButtonDown(0))
+        {
+            OnClick();
+        }
+    }
+
+    private void OnClick()
+    {
+        // Debug.Log("Mouse0 Down");
+        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var rayHitCount = Physics2D.RaycastNonAlloc(mousePos, Vector2.zero, rayHits);
+        if (rayHitCount == 0) return;
+
+        // Debug.Log(hit.collider);
+        var item = rayHits[0].collider.GetComponentInParent<ItemPlayBehaviour>();
+        if (item == null) return;
+
+        // Debug.Log(item);
+        var joint = item.GetJointByHit(rayHits[0].point);
+        if (joint == null) return;
+
+        // check if the joint is covered by other items
+        var circleHitCount = Physics2D.CircleCastNonAlloc(joint.connectedAnchor, Consts.JointCollisionRadius,
+            Vector2.zero, circleHits);
+        if (circleHitCount == 0)
+        {
+            Debug.LogError("WTF, circleHitCount == 0");
+            return;
+        }
+
+        var item2 = circleHits[0].collider.GetComponentInParent<ItemPlayBehaviour>();
+        if (item2 != item) return;
+
+        item.OnJointClick(joint);
     }
 }

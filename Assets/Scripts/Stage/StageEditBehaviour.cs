@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using Item;
+using Layer;
 using UnityEngine;
 
 namespace Stage
@@ -20,30 +19,41 @@ namespace Stage
                 return;
             }
 
-            var containers = GetComponentsInChildren<ItemEditContainer>(true);
-            if (containers.Length > 0)
+            var layers = GetComponentsInChildren<LayerEditBehaviour>(true);
+            if (layers.Length > 0)
             {
                 Debug.LogError("stage already expanded, please clear the stage first");
                 return;
             }
 
-            var itemEditContainer = LoadComponent<ItemEditContainer>(Consts.ItemEditContainer);
-            foreach (var itemPosInfo in stageInfo.itemPosInfos)
+            var layerEditPrefab = LoadComponent<LayerEditBehaviour>(Consts.LayerEdit);
+            foreach (var layerInfo in stageInfo.layerInfos)
             {
-                var container = Instantiate(itemEditContainer, transform);
-                container.gameObject.name = itemPosInfo.itemName;
-                container.itemName = itemPosInfo.itemName;
-                container.LoadItem();
-                SetTransInfo(itemPosInfo.transInfo, true, container.transform);
+                var layer = AddLayer(layerInfo, layerEditPrefab);
+                layer.Rename();
             }
+        }
+
+        public LayerEditBehaviour AddLayer(LayerInfo layerInfo, LayerEditBehaviour layerEditPrefab = null)
+        {
+            if (layerEditPrefab == null)
+            {
+                layerEditPrefab = LoadComponent<LayerEditBehaviour>(Consts.LayerEdit);
+            }
+
+            var layer = Instantiate(layerEditPrefab, transform);
+            layer.layerInfo = layerInfo;
+            layer.ExpandLayer();
+
+            return layer;
         }
 
         public override void ClearStage()
         {
-            var containers = GetComponentsInChildren<ItemEditContainer>(true);
-            foreach (var container in containers)
+            var layers = GetComponentsInChildren<LayerEditBehaviour>(true);
+            foreach (var layer in layers)
             {
-                DestroyImmediate(container.gameObject);
+                DestroyImmediate(layer.gameObject);
             }
         }
 
@@ -56,26 +66,27 @@ namespace Stage
                 return;
             }
 
-            var containers = GetComponentsInChildren<ItemEditContainer>(false);
-            if (containers.Length == 0)
+            var layers = GetComponentsInChildren<LayerEditBehaviour>(false);
+            if (layers.Length == 0)
             {
-                Debug.LogError("no item found in the stage, nothing to serialize");
+                Debug.LogError("no layer found in the stage, nothing to serialize");
                 return;
             }
 
             this.ResetTransform();
 
-            stageInfo.itemPosInfos = new List<ItemPosInfo>(containers.Length);
-            foreach (var container in containers)
+            foreach (var layer in layers)
             {
-                var itemPosInfo = new ItemPosInfo
-                {
-                    itemName = container.itemName,
-                    transInfo = GetTransInfo(true, container.transform)
-                };
-                stageInfo.itemPosInfos.Add(itemPosInfo);
+                layer.SerializeLayer(false);
             }
 
+            stageInfo.layerInfos.Sort((a, b) => a.layerIndex.CompareTo(b.layerIndex));
+
+            SaveAsset();
+        }
+
+        private void SaveAsset()
+        {
             UnityEditor.EditorUtility.SetDirty(stageInfo);
             UnityEditor.AssetDatabase.SaveAssets();
             UnityEditor.AssetDatabase.Refresh();

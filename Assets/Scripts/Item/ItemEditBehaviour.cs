@@ -43,6 +43,15 @@ namespace Item
             return AddCollider<CircleCollider2D>(CircleColliderPrefabPath);
         }
 
+        public void ClearItem()
+        {
+            // Destroy all the colliders
+            foreach (var col in GetComponentsInChildren<Collider2D>(true))
+            {
+                DestroyImmediate(col.gameObject);
+            }
+        }
+
 #if UNITY_EDITOR
 
         public void SerializeItem()

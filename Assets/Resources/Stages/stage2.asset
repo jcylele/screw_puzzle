@@ -12,16 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54806260281b44609efc87888e55a128, type: 3}
   m_Name: stage2
   m_EditorClassIdentifier: 
-  itemPosInfos:
-  - itemName: capsule
-    transInfo:
-      position: {x: -0.9, y: 1, z: 0}
-      rotation: {x: 0, y: 0, z: 0.5, w: 0.8660254}
-  - itemName: capsule
-    transInfo:
-      position: {x: 0.9, y: 1, z: 0}
-      rotation: {x: 0, y: 0, z: -0.5, w: 0.8660254}
-  - itemName: capsule
-    transInfo:
-      position: {x: 0, y: -0.45, z: 0}
-      rotation: {x: 0, y: 0, z: 0, w: 1}
+  layerInfos:
+  - layerIndex: 1
+    uuid: -36676
+    itemPosInfos:
+    - itemName: circle_flower
+      transInfo:
+        position: {x: -3.18, y: 0.57, z: 0}
+        rotation: {x: -0, y: -0, z: -0, w: 1}
+    - itemName: v_capsule
+      transInfo:
+        position: {x: -3.12, y: 2.5, z: 0}
+        rotation: {x: -0, y: -0, z: -0, w: 1}
+  - layerIndex: 2
+    uuid: -36552
+    itemPosInfos:
+    - itemName: capsule
+      transInfo:
+        position: {x: -0.9, y: 1, z: 0}
+        rotation: {x: -0, y: -0, z: 0.5, w: 0.8660254}
+    - itemName: capsule
+      transInfo:
+        position: {x: 0.9, y: 1, z: 0}
+        rotation: {x: -0, y: -0, z: -0.5, w: 0.8660254}
+    - itemName: capsule
+      transInfo:
+        position: {x: 0, y: -0.45, z: 0}
+        rotation: {x: -0, y: -0, z: -0, w: 1}
+  - layerIndex: 3
+    uuid: -40108
+    itemPosInfos:
+    - itemName: bone
+      transInfo:
+        position: {x: 4.08, y: -0.38, z: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 1}
+    - itemName: rect_hollow
+      transInfo:
+        position: {x: 4.05, y: 1.45, z: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 1}
