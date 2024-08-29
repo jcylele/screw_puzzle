@@ -69,4 +69,7 @@ public static class Consts
     public const int MaxLayerCount = 10;
 
     #endregion
+
+    // one unit in scene is 72 pixel on ui
+    public const float PixelPerUnit = 72f;
 }

@@ -72,7 +72,7 @@ namespace Editor
                 itemEditBehaviour.ExpandItem();
             }
 
-            if (GUILayout.Button("Clear Item", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
+            if (GUILayout.Button("Collapse Item", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
                 itemEditBehaviour.ClearItem();
             }

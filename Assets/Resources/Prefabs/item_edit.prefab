@@ -10,7 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6490328503024880166}
   - component: {fileID: 5391301756713924642}
+  - component: {fileID: 7411796809563287235}
   - component: {fileID: 6490328503024880167}
+  - component: {fileID: 3142803274488195886}
+  - component: {fileID: 5191759560424137176}
   m_Layer: 0
   m_Name: item_edit
   m_TagString: Untagged
@@ -45,8 +48,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 0}
-  capsuleColliderPrefab: {fileID: 6894311303200740209, guid: 0ecfdff92bfa8034699ae786db040608, type: 3}
-  boxColliderPrefab: {fileID: 4931538410767542221, guid: a73bc1a005f534a41973e0fdd16f07e1, type: 3}
+--- !u!114 &7411796809563287235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490328503024880164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0267e9aa887444fe8960189b4578c0ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &6490328503024880167
 Rigidbody2D:
   serializedVersion: 4
@@ -68,3 +81,52 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!33 &3142803274488195886
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490328503024880164}
+  m_Mesh: {fileID: 0}
+--- !u!23 &5191759560424137176
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6490328503024880164}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
