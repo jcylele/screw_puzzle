@@ -7,7 +7,7 @@ namespace Stage
     {
         private void Awake()
         {
-            Debug.LogError("StageEditBehaviour should not run in play mode");
+            // Debug.LogError("StageEditBehaviour should not run in play mode");
             this.gameObject.SetActive(false);
         }
 
@@ -29,8 +29,7 @@ namespace Stage
             var layerEditPrefab = LoadComponent<LayerEditBehaviour>(Consts.LayerEdit);
             foreach (var layerInfo in stageInfo.layerInfos)
             {
-                var layer = AddLayer(layerInfo, layerEditPrefab);
-                layer.Rename();
+                AddLayer(layerInfo, layerEditPrefab);
             }
         }
 
@@ -42,7 +41,7 @@ namespace Stage
             }
 
             var layer = Instantiate(layerEditPrefab, transform);
-            layer.layerInfo = layerInfo;
+            layer.SetLayerInfo(layerInfo);
             layer.ExpandLayer();
 
             return layer;

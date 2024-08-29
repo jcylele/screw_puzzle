@@ -8,13 +8,39 @@ namespace Item
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class ItemPlayBehaviour : BaseItemBehaviour
     {
+        public float alpha = 0.8f;
+
+        public Color[] layerColors = new Color[10]
+        {
+            Color.magenta,
+            Color.red,
+            new Color(1, 0.5f, 0),
+            new Color(0.6f, 0.3f, 0),
+            Color.yellow,
+            Color.green,
+            Color.blue,
+            Color.cyan,
+            new Color(0.5f, 0, 0.5f),
+            Color.gray
+        };
+
         protected override string BoxColliderPrefabPath => Consts.BoxColliderPlay;
         protected override string CapsuleColliderPrefabPath => Consts.CapsuleColliderPlay;
         protected override string CircleColliderPrefabPath => Consts.CircleColliderPlay;
 
+        private readonly List<JointPlayBehaviour> jointPlayList = new List<JointPlayBehaviour>();
+
+        /// <summary>
+        /// used multiple times, so cache it
+        /// </summary>
+        private JointPlayBehaviour jointPlayPrefab;
+
+        private MaterialPropertyBlock props;
+        private static readonly int ColorID = Shader.PropertyToID("_Color");
+
         private void Start()
         {
-            ExpandItem();
+            // colliders are generated in ExpandItem, so generate mesh here
             GenerateMesh();
         }
 
@@ -24,18 +50,33 @@ namespace Item
             if (joint2D == null) return;
 
             joint2D.anchor = jointPosition;
+
+            this.jointPlayPrefab ??= LoadComponent<JointPlayBehaviour>(Consts.JointPlay);
+
+            var jointPlay = Instantiate(this.jointPlayPrefab, transform);
+            jointPlay.transform.localPosition = jointPosition;
+            jointPlay.joint = joint2D;
+
+            jointPlay.ScrewColor = Game.Instance.GetNextColor();
+
+            jointPlayList.Add(jointPlay);
         }
 
-        public HingeJoint2D GetJointByHit(Vector2 hitWorldPos)
+        public JointPlayBehaviour GetJointByHit(Vector2 hitWorldPos)
         {
             // TODO maybe should be cached, but deletion will be more complex
             var joints = GetComponents<HingeJoint2D>();
-            foreach (var joint in joints)
+            foreach (var jointPlay in jointPlayList)
             {
-                var distance = Vector2.Distance(joint.connectedAnchor, hitWorldPos);
+                if (jointPlay.ScrewColor == ScrewColor.None)
+                {
+                    continue;
+                }
+
+                var distance = Vector2.Distance(jointPlay.WorldPosition, hitWorldPos);
                 if (distance <= Consts.JointRadius)
                 {
-                    return joint;
+                    return jointPlay;
                 }
             }
 
@@ -44,13 +85,8 @@ namespace Item
 
         public void OnFallToGround()
         {
+            this.BelongLayerBehaviour.OnItemFallToGround(this);
             Destroy(gameObject);
-        }
-
-        public void OnJointClick(HingeJoint2D joint)
-        {
-            Destroy(joint);
-            Game.Instance.OnScrewDrop(ScrewColor.None);
         }
 
         private void GenerateMesh()
@@ -78,13 +114,13 @@ namespace Item
                 totalVertexCount += info.VertexCount;
                 totalIndexCount += info.TriangleCount * 3;
                 meshBounds.Encapsulate(info.Bounds);
-                Debug.Log($"{col}, vertex {info.VertexCount} triangle {info.TriangleCount}");
+                // Debug.Log($"{col}, vertex {info.VertexCount} triangle {info.TriangleCount}");
             }
 
             stream.Setup(
                 meshData,
                 colliders.Length,
-                totalIndexCount,
+                totalVertexCount,
                 totalIndexCount
             );
 
@@ -103,7 +139,7 @@ namespace Item
             mesh.bounds = meshBounds;
             Mesh.ApplyAndDisposeWritableMeshData(meshDataArray, mesh);
 
-            
+
             // Set materials
             var meshRenderer = GetComponent<MeshRenderer>();
             var mat = meshRenderer.sharedMaterials[0];
@@ -112,7 +148,14 @@ namespace Item
             {
                 mats[i] = mat;
             }
+
             meshRenderer.materials = mats;
+
+            props ??= new MaterialPropertyBlock();
+            var color = this.layerColors[BelongLayerBehaviour.LayerInfo.layerIndex - 1];
+            color.a = alpha;
+            props.SetColor(ColorID, color);
+            meshRenderer.SetPropertyBlock(props);
         }
     }
 }

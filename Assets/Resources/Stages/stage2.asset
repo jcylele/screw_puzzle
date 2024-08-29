@@ -18,11 +18,11 @@ MonoBehaviour:
     itemPosInfos:
     - itemName: circle_flower
       transInfo:
-        position: {x: -3.18, y: 0.57, z: 0}
+        position: {x: 0, y: 0.57, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
     - itemName: v_capsule
       transInfo:
-        position: {x: -3.12, y: 2.5, z: 0}
+        position: {x: 0, y: 2.5, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
   - layerIndex: 2
     uuid: -36552
@@ -44,9 +44,9 @@ MonoBehaviour:
     itemPosInfos:
     - itemName: bone
       transInfo:
-        position: {x: 4.08, y: -0.38, z: 0}
+        position: {x: 0, y: -0.38, z: 0}
         rotation: {x: 0, y: 0, z: 0, w: 1}
     - itemName: rect_hollow
       transInfo:
-        position: {x: 4.05, y: 1.45, z: 0}
+        position: {x: 0, y: 1.45, z: 0}
         rotation: {x: 0, y: 0, z: 0, w: 1}

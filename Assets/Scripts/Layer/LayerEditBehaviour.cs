@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Item;
 using Stage;
 using UnityEngine;
@@ -10,13 +9,13 @@ namespace Layer
     {
         private void Awake()
         {
-            Debug.LogWarning("LayerEditBehaviour should not run in play mode");
+            // Debug.LogWarning("LayerEditBehaviour should not run in play mode");
             this.gameObject.SetActive(false);
         }
 
         public override void ExpandLayer()
         {
-            if (layerInfo == null)
+            if (LayerInfo == null)
             {
                 Debug.LogError("layerInfo is null");
                 return;
@@ -32,12 +31,12 @@ namespace Layer
             this.RefreshLayerPosition();
 
             var itemEditContainer = LoadComponent<ItemEditContainer>(Consts.ItemEditContainer);
-            foreach (var itemPosInfo in layerInfo.itemPosInfos)
+            foreach (var itemPosInfo in LayerInfo.itemPosInfos)
             {
                 var container = Instantiate(itemEditContainer, transform);
                 container.gameObject.name = itemPosInfo.itemName;
                 container.itemName = itemPosInfo.itemName;
-                container.LoadItem();
+                container.LoadItem(this);
                 SetTransInfo(itemPosInfo.transInfo, true, container.transform);
             }
         }
@@ -56,7 +55,7 @@ namespace Layer
 #if UNITY_EDITOR
         public void SerializeLayer(bool saveAsset)
         {
-            if (layerInfo == null)
+            if (LayerInfo == null)
             {
                 Debug.LogError($"layerInfo of {gameObject.name} is null");
                 return;
@@ -71,7 +70,7 @@ namespace Layer
 
             this.RefreshLayerPosition();
 
-            layerInfo.itemPosInfos = new List<ItemPosInfo>(items.Length);
+            LayerInfo.itemPosInfos = new List<ItemPosInfo>(items.Length);
             foreach (var item in items)
             {
                 var itemPosInfo = new ItemPosInfo
@@ -79,25 +78,29 @@ namespace Layer
                     itemName = item.itemName,
                     transInfo = GetTransInfo(true, item.transform)
                 };
-                layerInfo.itemPosInfos.Add(itemPosInfo);
+                // Debug.Log($"itemPosInfo: {itemPosInfo.itemName} {itemPosInfo.transInfo.position}");
+                LayerInfo.itemPosInfos.Add(itemPosInfo);
             }
-
-            if (!saveAsset) return;
 
             var stage = GetComponentInParent<StageEditBehaviour>();
             var stageInfo = stage.stageInfo;
 
-            var index = stageInfo.FindLayerIndex(layerInfo.uuid);
+            var index = stageInfo.FindLayerIndex(LayerInfo.uuid);
             if (index == -1)
             {
-                stageInfo.layerInfos.Add(layerInfo);
+                stageInfo.layerInfos.Add(LayerInfo);
+                Debug.Log($"Add {LayerInfo.ItemName} to {stageInfo.name}");
             }
             else
             {
-                stageInfo.layerInfos[index] = layerInfo;
+                stageInfo.layerInfos[index] = LayerInfo;
+                Debug.Log($"Update {LayerInfo.ItemName} of {stageInfo.name}");
             }
 
-            SaveAsset(stageInfo);
+            if (saveAsset)
+            {
+                SaveAsset(stageInfo);
+            }
         }
 
         private void SaveAsset(StageInfo stageInfo)
@@ -115,7 +118,7 @@ namespace Layer
         public void RemoveLayer()
         {
             var stage = GetComponentInParent<StageEditBehaviour>();
-            stage.stageInfo.RemoveLayerByUuid(layerInfo.uuid);
+            stage.stageInfo.RemoveLayerByUuid(LayerInfo.uuid);
             SaveAsset(stage.stageInfo);
 
             DestroyImmediate(gameObject);

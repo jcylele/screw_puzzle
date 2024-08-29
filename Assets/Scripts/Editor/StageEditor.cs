@@ -85,8 +85,8 @@ namespace Editor
                 var layers = stage.GetComponentsInChildren<LayerEditBehaviour>(true);
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    layers[i].layerInfo.layerIndex = i + 1;
-                    layers[i].gameObject.name = layers[i].layerInfo.ItemName;
+                    layers[i].LayerInfo.layerIndex = i + 1;
+                    layers[i].Rename();
                     layers[i].RefreshLayerPosition();
                 }
 

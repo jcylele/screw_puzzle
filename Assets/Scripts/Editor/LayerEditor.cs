@@ -33,7 +33,7 @@ namespace Editor
             // Get the Stage script
             var layer = (LayerEditBehaviour)target;
 
-            if (layer.layerInfo == null)
+            if (layer.LayerInfo == null)
             {
                 return;
             }
@@ -51,8 +51,7 @@ namespace Editor
                 var container = Instantiate(itemEditContainer, layer.transform);
                 container.gameObject.name = itemNames[selectedItemIndex];
                 container.itemName = itemNames[selectedItemIndex];
-                container.LoadItem();
-
+                container.LoadItem(layer);
                 Selection.activeGameObject = container.gameObject;
             }
 

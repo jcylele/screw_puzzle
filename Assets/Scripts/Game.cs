@@ -50,7 +50,7 @@ public class Game : MonoBehaviour
         return null;
     }
 
-    public void OnScrewDrop(ScrewColor screwColor)
+    private void OnScrewDrop(ScrewColor screwColor)
     {
         if (screwColor == ScrewColor.None)
         {
@@ -102,11 +102,11 @@ public class Game : MonoBehaviour
         if (item == null) return;
 
         // Debug.Log(item);
-        var joint = item.GetJointByHit(rayHits[0].point);
-        if (joint == null) return;
+        var jointPlay = item.GetJointByHit(rayHits[0].point);
+        if (jointPlay == null) return;
 
         // check if the joint is covered by other items
-        var circleHitCount = Physics2D.CircleCastNonAlloc(joint.connectedAnchor, Consts.JointCollisionRadius,
+        var circleHitCount = Physics2D.CircleCastNonAlloc(jointPlay.WorldPosition, Consts.JointCollisionRadius,
             Vector2.zero, circleHits);
         if (circleHitCount == 0)
         {
@@ -115,8 +115,9 @@ public class Game : MonoBehaviour
         }
 
         var item2 = circleHits[0].collider.GetComponentInParent<ItemPlayBehaviour>();
+        // covered by other items
         if (item2 != item) return;
 
-        item.OnJointClick(joint);
+        this.OnScrewDrop(jointPlay.OnClick());
     }
 }

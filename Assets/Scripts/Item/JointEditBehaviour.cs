@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace Item
 {
-    public class JointEditBehaviour : MonoBehaviour
+    public class JointEditBehaviour : BaseBehaviour
     {
         
     }

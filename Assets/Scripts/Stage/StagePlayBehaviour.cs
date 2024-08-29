@@ -10,7 +10,7 @@ namespace Stage
             foreach (var layerInfo in stageInfo.layerInfos)
             {
                 var layer = Instantiate(layerPrefab, transform);
-                layer.layerInfo = layerInfo;
+                layer.SetLayerInfo(layerInfo);
                 layer.ExpandLayer();
             }
         }

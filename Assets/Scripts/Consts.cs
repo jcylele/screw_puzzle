@@ -1,16 +1,16 @@
 ﻿public enum ScrewColor
 {
     None,
+    Pink,
     Red,
+    Orange,
     Brown,
+    Yellow,
     Green,
     Blue,
     Cyan,
-    Gray,
-    Yellow,
-    Orange,
     Purple,
-    Pink,
+    Gray,
     Max,
 }
 
@@ -47,6 +47,7 @@ public static class Consts
     public const string ItemEdit = PrefabRootPath + "item_edit";
     public const string ItemPlay = PrefabRootPath + "item_play";
     public const string JointEdit = PrefabRootPath + "joint_edit";
+    public const string JointPlay = PrefabRootPath + "joint_play";
     public const string CapsuleColliderEdit = PrefabRootPath + "capsule_collider_edit";
     public const string CapsuleColliderPlay = PrefabRootPath + "capsule_collider_play";
     public const string BoxColliderEdit = PrefabRootPath + "box_collider_edit";

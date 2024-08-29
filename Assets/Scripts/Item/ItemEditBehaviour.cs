@@ -18,7 +18,7 @@ namespace Item
 
         private void Awake()
         {
-            Debug.LogError("ItemEditBehaviour should not run in play mode");
+            // Debug.LogError("ItemEditBehaviour should not run in play mode");
             this.gameObject.SetActive(false);
         }
 

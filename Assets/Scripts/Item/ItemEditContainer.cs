@@ -1,3 +1,4 @@
+using Layer;
 using UnityEngine;
 
 namespace Item
@@ -6,14 +7,15 @@ namespace Item
     {
         public string itemName;
 
-        public void LoadItem()
+        public void LoadItem(BaseLayerBehaviour layerBehaviour)
         {
             var itemEditPrefab = LoadComponent<ItemEditBehaviour>(Consts.ItemEdit);
+
             var item = Instantiate(itemEditPrefab, transform);
             item.itemInfo = Resources.Load<ItemInfo>($"{Consts.ItemInfoRootPath}/{itemName}");
-
+            item.BelongLayerBehaviour = layerBehaviour;
             item.ExpandItem();
-            
+
             item.gameObject.hideFlags = HideFlags.HideInHierarchy;
         }
     }

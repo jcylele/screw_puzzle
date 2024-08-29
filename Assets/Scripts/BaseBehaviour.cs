@@ -13,6 +13,12 @@ public class BaseBehaviour : MonoBehaviour
         transform.localScale = Vector3.one;
     }
 
+    /// <summary>
+    /// Set transform position and rotation by TransInfo
+    /// </summary>
+    /// <param name="transInfo">information</param>
+    /// <param name="isLocal">true for local space, false for world space</param>
+    /// <param name="trans">default as comp.transform</param>
     public void SetTransInfo(TransInfo transInfo, bool isLocal, Transform trans = null)
     {
         if (trans == null)
