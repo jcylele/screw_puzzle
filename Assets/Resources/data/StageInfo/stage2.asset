@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerInfos:
   - layerIndex: 1
-    uuid: -36676
+    layerName: bone_rect
     itemPosInfos:
-    - itemName: circle_flower
+    - itemName: bone
       transInfo:
-        position: {x: 0, y: 0.57, z: 0}
-        rotation: {x: -0, y: -0, z: -0, w: 1}
-    - itemName: v_capsule
+        position: {x: 0, y: -1.3, z: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 1}
+    - itemName: rect_hollow
       transInfo:
-        position: {x: 0, y: 2.5, z: 0}
-        rotation: {x: -0, y: -0, z: -0, w: 1}
+        position: {x: 0, y: 1.84, z: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 1}
   - layerIndex: 2
-    uuid: -36552
+    layerName: 3cap
     itemPosInfos:
     - itemName: capsule
       transInfo:
@@ -40,13 +40,13 @@ MonoBehaviour:
         position: {x: 0, y: -0.45, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
   - layerIndex: 3
-    uuid: -40108
+    layerName: circle+cap
     itemPosInfos:
-    - itemName: bone
+    - itemName: circle_flower
       transInfo:
-        position: {x: 0, y: -0.38, z: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 1}
-    - itemName: rect_hollow
+        position: {x: 0, y: 0.84, z: 0}
+        rotation: {x: -0, y: -0, z: -0, w: 1}
+    - itemName: v_capsule
       transInfo:
-        position: {x: 0, y: 1.45, z: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 1}
+        position: {x: 0, y: 3.47, z: 0}
+        rotation: {x: -0, y: -0, z: -0, w: 1}

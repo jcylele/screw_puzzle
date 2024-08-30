@@ -6,16 +6,20 @@ namespace Item
     public class ItemEditContainer : BaseBehaviour
     {
         public string itemName;
+        private ItemEditBehaviour itemEditBehaviour;
 
         public void LoadItem(BaseLayerBehaviour layerBehaviour)
         {
             var itemEditPrefab = LoadComponent<ItemEditBehaviour>(Consts.ItemEdit);
 
-            var item = Instantiate(itemEditPrefab, transform);
-            item.itemInfo = Resources.Load<ItemInfo>($"{Consts.ItemInfoRootPath}/{itemName}");
-            item.ExpandItem();
+            itemEditBehaviour = Instantiate(itemEditPrefab, transform);
+            itemEditBehaviour.Initialize(itemName);
+            itemEditBehaviour.SetColor(layerBehaviour.GetLayerColor());
+            itemEditBehaviour.ExpandItem();
 
-            item.gameObject.hideFlags = HideFlags.HideInHierarchy;
+            itemEditBehaviour.gameObject.hideFlags = HideFlags.HideInHierarchy;
+
+            this.gameObject.name = $"{itemName} Container";
         }
     }
 }

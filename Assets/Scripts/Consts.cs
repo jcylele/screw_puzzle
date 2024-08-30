@@ -59,8 +59,9 @@ public static class Consts
 
     #region 其他Asset文件夹
 
-    public const string ItemInfoRootPath = "data/Items";
-    public const string StageInfoRootPath = "data/Stages";
+    public const string ItemInfoRootPath = "data/ItemInfo";
+    public const string ItemMeshRootPath = "data/ItemMesh";
+    public const string StageInfoRootPath = "data/StageInfo";
 
     #endregion
 

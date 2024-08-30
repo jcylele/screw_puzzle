@@ -14,9 +14,9 @@ namespace Layer
     [Serializable]
     public class LayerInfo
     {
-        public string ItemName => $"layer {layerIndex} ({uuid})";
+        public string ItemName => $"{layerName}({layerIndex})";
         public int layerIndex;
-        public int uuid;
+        public string layerName;
         public List<ItemPosInfo> itemPosInfos = new List<ItemPosInfo>();
 
         public override string ToString()

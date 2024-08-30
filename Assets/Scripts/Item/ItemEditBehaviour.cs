@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ColliderMesh;
+using UnityEditor;
 using UnityEngine;
 
 namespace Item
 {
+    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class ItemEditBehaviour : BaseItemBehaviour
     {
         protected override string BoxColliderPrefabPath => Consts.BoxColliderEdit;
@@ -152,6 +156,81 @@ namespace Item
             return circleColliderInfos;
         }
 
+
+        public void GenerateMesh()
+        {
+            var colliders = GetComponentsInChildren<Collider2D>(false);
+            if (colliders.Length == 0)
+            {
+                Debug.LogError($"no collider found in the item {gameObject.name}");
+                return;
+            }
+
+            var composite = gameObject.AddComponent<CompositeCollider2D>();
+            composite.generationType = CompositeCollider2D.GenerationType.Manual;
+            composite.geometryType = CompositeCollider2D.GeometryType.Polygons;
+            // composite.edgeRadius = 0.01f;
+            var polygons = new List<PolygonCollider2D>(colliders.Length);
+            foreach (var col2D in colliders)
+            {
+                var polygon = ConvertToPolygonCollider(col2D);
+                polygons.Add(polygon);
+            }
+
+            composite.GenerateGeometry();
+
+            var colliderMesh = composite.CreateMesh(false, false);
+            MeshUtility.Optimize(colliderMesh);
+            colliderMesh.hideFlags &=
+                ~(HideFlags.DontSaveInEditor
+                  | HideFlags.HideInHierarchy
+                  | HideFlags.DontSaveInBuild);
+
+            var meshFilter = GetComponent<MeshFilter>();
+            meshFilter.mesh = colliderMesh;
+
+            DestroyImmediate(composite);
+            foreach (var polygon in polygons)
+            {
+                DestroyImmediate(polygon);
+            }
+
+            AssetDatabase.CreateAsset(colliderMesh,
+                $"Assets/Resources/{Consts.ItemMeshRootPath}/{itemInfo.name}.asset");
+            AssetDatabase.SaveAssets();
+
+            Debug.Log($"mesh generated for {itemInfo.name}");
+        }
+
+        private PolygonCollider2D ConvertToPolygonCollider(Collider2D col2D)
+        {
+            var meshInfo = CreateMeshInfo(col2D);
+            var polygonCollider = gameObject.AddComponent<PolygonCollider2D>();
+            polygonCollider.usedByComposite = true;
+
+            polygonCollider.pathCount = 1;
+            var vertices = new Vector2[meshInfo.VertexCount];
+            for (var j = 0; j < meshInfo.VertexCount; j++)
+            {
+                vertices[j] = meshInfo.GetVertex(j);
+            }
+
+            polygonCollider.SetPath(0, vertices);
+
+            return polygonCollider;
+        }
+
+        private static BaseMeshInfo CreateMeshInfo(Collider2D col2D)
+        {
+            return col2D switch
+            {
+                BoxCollider2D boxCollider2D => new BoxMeshInfo(boxCollider2D),
+                CircleCollider2D circleCollider2D => new CircleMeshInfo(circleCollider2D),
+                CapsuleCollider2D capsuleCollider2D => new CapsuleMeshInfo(capsuleCollider2D),
+                // PolygonCollider2D polygonCollider2D => new PolygonMeshInfo(polygonCollider2D),
+                _ => throw new ArgumentOutOfRangeException($"unsupported collider2d type {col2D.GetType()}")
+            };
+        }
 #endif
     }
 }

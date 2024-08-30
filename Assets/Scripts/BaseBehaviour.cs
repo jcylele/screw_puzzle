@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 using Item;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class BaseBehaviour : MonoBehaviour
 {
-    private readonly Dictionary<string, GameObject> prefabDict = new Dictionary<string, GameObject>();
+    private readonly Dictionary<string, Object> prefabDict = new Dictionary<string, Object>();
+
+    private void OnDestroy()
+    {
+        prefabDict.Clear();
+    }
 
     protected void ResetTransform()
     {
@@ -52,27 +58,31 @@ public class BaseBehaviour : MonoBehaviour
         };
     }
 
-    private GameObject LoadPrefab(string prefabPath)
+    protected Object LoadObject(string prefabPath, bool cache = true)
     {
         if (prefabDict.TryGetValue(prefabPath, out var prefab))
         {
             return prefab;
         }
 
-        prefab = Resources.Load<GameObject>(prefabPath);
+        prefab = Resources.Load(prefabPath);
         if (prefab == null)
         {
-            Debug.LogError("Load prefab failed: " + prefabPath);
+            Debug.LogError("LoadObject failed: " + prefabPath);
             return null;
         }
 
-        prefabDict.Add(prefabPath, prefab);
+        if (cache)
+        {
+            prefabDict.Add(prefabPath, prefab);
+        }
+
         return prefab;
     }
 
-    public T LoadComponent<T>(string prefabPath) where T : Component
+    protected T LoadComponent<T>(string prefabPath, bool cache = true) where T : Component
     {
-        var prefab = LoadPrefab(prefabPath);
+        var prefab = LoadObject(prefabPath, cache) as GameObject;
         if (prefab == null)
         {
             return null;

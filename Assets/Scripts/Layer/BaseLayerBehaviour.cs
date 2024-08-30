@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Stage;
+using UnityEngine;
 
 namespace Layer
 {
     public abstract class BaseLayerBehaviour : BaseBehaviour
     {
         public LayerInfo LayerInfo { get; private set; }
+        protected BaseStageBehaviour BelongStageBehaviour { get; private set; }
 
         /// <summary>
         /// child item count, only used in play mode
@@ -15,6 +17,16 @@ namespace Layer
         {
             this.LayerInfo = layerInfo;
             this.Rename();
+        }
+        
+        public void BelongToStage(BaseStageBehaviour stageBehaviour)
+        {
+            this.BelongStageBehaviour = stageBehaviour;
+        }
+        
+        public Color GetLayerColor()
+        {
+            return BelongStageBehaviour.GetLayerColor(LayerInfo.layerIndex);
         }
 
         /// <summary>

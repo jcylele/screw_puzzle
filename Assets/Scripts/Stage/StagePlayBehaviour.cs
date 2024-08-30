@@ -9,7 +9,7 @@ namespace Stage
     {
         public static StagePlayBehaviour Instance { get; private set; }
 
-        private readonly List<LayerPlayBehaviour> layers = new List<LayerPlayBehaviour>(Consts.MaxLayerCount);
+        private readonly List<BaseLayerBehaviour> layers = new List<BaseLayerBehaviour>(Consts.MaxLayerCount);
 
         private Camera mainCamera;
 
@@ -26,14 +26,14 @@ namespace Stage
             {
                 var layer = Instantiate(layerPrefab, transform);
                 layer.SetLayerInfo(layerInfo);
-                layer.BelongStageBehaviour = this;
+                layer.BelongToStage(this);
                 layer.ExpandLayer();
 
                 layers.Add(layer);
             }
         }
 
-        public void OnLayerComplete(LayerPlayBehaviour layer)
+        public override void OnLayerComplete(BaseLayerBehaviour layer)
         {
             layers.Remove(layer);
             if (layers.Count == 0)

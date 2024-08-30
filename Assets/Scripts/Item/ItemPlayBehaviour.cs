@@ -8,8 +8,6 @@ namespace Item
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class ItemPlayBehaviour : BaseItemBehaviour
     {
-        public float alpha = 0.8f;
-
         protected override string BoxColliderPrefabPath => Consts.BoxColliderPlay;
         protected override string CapsuleColliderPrefabPath => Consts.CapsuleColliderPlay;
         protected override string CircleColliderPrefabPath => Consts.CircleColliderPlay;
@@ -21,14 +19,18 @@ namespace Item
         /// </summary>
         private JointPlayBehaviour jointPlayPrefab;
 
-        private MaterialPropertyBlock props;
-        private static readonly int ColorID = Shader.PropertyToID("_Color");
-
         private void Start()
         {
             // colliders are generated in ExpandItem, so generate mesh here
-            GenerateMesh();
+            // GenerateMesh();
         }
+
+        protected override int GetItemLayer()
+        {
+            return Game.Instance.GetLayerValue(LayerIndex, false);
+        }
+
+        public int LayerIndex => BelongLayerBehaviour.LayerInfo.layerIndex;
 
         protected override void AddJoint(Vector3 jointPosition, Transform colliderTrans)
         {
@@ -129,24 +131,6 @@ namespace Item
 
             mesh.bounds = meshBounds;
             Mesh.ApplyAndDisposeWritableMeshData(meshDataArray, mesh);
-
-
-            // Set materials
-            var meshRenderer = GetComponent<MeshRenderer>();
-            var mat = meshRenderer.sharedMaterials[0];
-            var mats = new Material[colliders.Length];
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                mats[i] = mat;
-            }
-
-            meshRenderer.materials = mats;
-
-            props ??= new MaterialPropertyBlock();
-            var color = Game.Instance.GetLayerColor(LayerIndex);
-            color.a = alpha;
-            props.SetColor(ColorID, color);
-            meshRenderer.SetPropertyBlock(props);
         }
     }
 }

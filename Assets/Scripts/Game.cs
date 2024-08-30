@@ -5,21 +5,6 @@ using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour
 {
-    [Tooltip("Color for each layer, from top to bottom.")] [SerializeField]
-    private Color[] layerColors = new Color[10]
-    {
-        Color.magenta,
-        Color.green,
-        Color.red,
-        Color.blue,
-        new Color(1, 0.5f, 0),
-        Color.cyan,
-        new Color(0.6f, 0.3f, 0),
-        new Color(0.5f, 0, 0.5f),
-        Color.yellow,
-        Color.gray
-    };
-
     [Tooltip("Pink,Red,Orange,Brown,Yellow,Green,Blue,Cyan,Purple,Gray")] [SerializeField]
     private Color[] screwColors =
     {
@@ -149,11 +134,6 @@ public class Game : MonoBehaviour
 
             this.OnScrewDrop(jointPlay.UnScrew());
         }
-    }
-
-    public Color GetLayerColor(int layerIndex)
-    {
-        return layerColors[layerIndex - 1];
     }
 
     public Color GetScrewColor(ScrewColor color)

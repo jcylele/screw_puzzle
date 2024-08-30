@@ -52,6 +52,16 @@ namespace Layer
             }
         }
 
+        public void RefreshLayerColor()
+        {
+            var layerColor = BelongStageBehaviour.GetLayerColor(LayerInfo.layerIndex);
+            var itemEditBehaviours = GetComponentsInChildren<ItemEditBehaviour>(true);
+            foreach (var itemEditBehaviour in itemEditBehaviours)
+            {
+                itemEditBehaviour.SetColor(layerColor);
+            }
+        }
+
 #if UNITY_EDITOR
         public void SerializeLayer(bool saveAsset)
         {
@@ -85,7 +95,7 @@ namespace Layer
             var stage = GetComponentInParent<StageEditBehaviour>();
             var stageInfo = stage.stageInfo;
 
-            var index = stageInfo.FindLayerIndex(LayerInfo.uuid);
+            var index = stageInfo.FindLayerIndex(LayerInfo.layerName);
             if (index == -1)
             {
                 stageInfo.layerInfos.Add(LayerInfo);
@@ -118,7 +128,7 @@ namespace Layer
         public void RemoveLayer()
         {
             var stage = GetComponentInParent<StageEditBehaviour>();
-            stage.stageInfo.RemoveLayerByUuid(LayerInfo.uuid);
+            stage.stageInfo.RemoveLayer(LayerInfo.layerName);
             SaveAsset(stage.stageInfo);
 
             DestroyImmediate(gameObject);

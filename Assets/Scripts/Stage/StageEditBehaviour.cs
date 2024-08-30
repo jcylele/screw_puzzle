@@ -42,6 +42,7 @@ namespace Stage
 
             var layer = Instantiate(layerEditPrefab, transform);
             layer.SetLayerInfo(layerInfo);
+            layer.BelongToStage(this);
             layer.ExpandLayer();
 
             return layer;
@@ -54,6 +55,11 @@ namespace Stage
             {
                 DestroyImmediate(layer.gameObject);
             }
+        }
+
+        public override void OnLayerComplete(BaseLayerBehaviour layer)
+        {
+            // Do Nothing
         }
 
 #if UNITY_EDITOR

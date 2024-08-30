@@ -14,17 +14,13 @@ namespace ProceduralMeshes.Generators
 
         public static BaseColliderInfo CreateColliderInfo(Collider2D collider2D)
         {
-            switch (collider2D)
+            return collider2D switch
             {
-                case BoxCollider2D boxCollider2D:
-                    return new BoxColliderInfo(boxCollider2D);
-                case CircleCollider2D circleCollider2D:
-                    return new CircleColliderInfo(circleCollider2D);
-                case CapsuleCollider2D capsuleCollider2D:
-                    return new CapsuleColliderInfo(capsuleCollider2D);
-                default:
-                    throw new System.NotImplementedException();
-            }
+                BoxCollider2D boxCollider2D => new BoxColliderInfo(boxCollider2D),
+                CircleCollider2D circleCollider2D => new CircleColliderInfo(circleCollider2D),
+                CapsuleCollider2D capsuleCollider2D => new CapsuleColliderInfo(capsuleCollider2D),
+                _ => throw new System.NotImplementedException()
+            };
         }
 
         public void SetCollider(Collider2D collider2D)

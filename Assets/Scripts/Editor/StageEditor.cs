@@ -11,6 +11,7 @@ namespace Editor
     public class StageEditor : UnityEditor.Editor
     {
         private string newStageFileName;
+        private string newLayerName;
 
         private StageInfo CreateNewStageInfoFile()
         {
@@ -64,43 +65,58 @@ namespace Editor
 
             GUILayout.BeginHorizontal();
 
+            newLayerName = EditorGUILayout.TextField(newLayerName,
+                MyEditorStyles.TextFieldStyle, MyEditorStyles.BigButtonLayoutOption);
+
             if (GUILayout.Button("Add Layer",
                     MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
                 var newLayerInfo = new LayerInfo
                 {
-                    layerIndex = stage.stageInfo.layerInfos.Count + 1
+                    layerIndex = stage.stageInfo.layerInfos.Count + 1,
+                    layerName = newLayerName
                 };
                 stage.stageInfo.layerInfos.Add(newLayerInfo);
 
                 var layer = stage.AddLayer(newLayerInfo);
-                newLayerInfo.uuid = layer.GetInstanceID();
                 layer.Rename();
                 Selection.activeObject = layer.gameObject;
-            }
-
-            if (GUILayout.Button("Reorder Layer",
-                    MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
-            {
-                var layers = stage.GetComponentsInChildren<LayerEditBehaviour>(true);
-                for (int i = 0; i < layers.Length; i++)
-                {
-                    layers[i].LayerInfo.layerIndex = i + 1;
-                    layers[i].Rename();
-                    layers[i].RefreshLayerPosition();
-                }
-
-                stage.SerializeStage();
             }
 
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
 
+            if (GUILayout.Button("Reorder Layer",
+                    MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
+            {
+                for (int i = 0, j = 0; i < stage.transform.childCount; i++)
+                {
+                    var child = stage.transform.GetChild(i);
+                    var layer = child.GetComponent<LayerEditBehaviour>();
+                    if (layer == null)
+                    {
+                        continue;
+                    }
+
+                    j++;
+                    layer.LayerInfo.layerIndex = j;
+                    layer.Rename();
+                    layer.RefreshLayerPosition();
+                    layer.RefreshLayerColor();
+                }
+
+                stage.SerializeStage();
+            }
+
             if (GUILayout.Button("Serialize Stage", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
                 stage.SerializeStage();
             }
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
 
             if (GUILayout.Button("Expand Stage", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {

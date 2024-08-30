@@ -58,6 +58,15 @@ namespace Editor
 
                 return;
             }
+            
+            GUILayout.BeginHorizontal();
+            
+            if (GUILayout.Button("Generate mesh", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
+            {
+                itemEditBehaviour.GenerateMesh();
+            }
+            
+            GUILayout.EndHorizontal();
 
             // item operation buttons
             GUILayout.BeginHorizontal();

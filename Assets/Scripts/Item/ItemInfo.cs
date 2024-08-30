@@ -47,5 +47,10 @@ namespace Item
         public List<CapsuleColliderInfo> capsuleColliders;
         public List<BoxColliderInfo> boxColliders;
         public List<CircleColliderInfo> circleColliders;
+
+        public int GetTotalColliderCount()
+        {
+            return capsuleColliders.Count + boxColliders.Count + circleColliders.Count;
+        }
     }
 }

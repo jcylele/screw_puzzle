@@ -10,7 +10,43 @@ namespace Item
         protected abstract string CapsuleColliderPrefabPath { get; }
         protected abstract string CircleColliderPrefabPath { get; }
         public LayerPlayBehaviour BelongLayerBehaviour { get; set; }
-        public int LayerIndex => BelongLayerBehaviour.LayerInfo.layerIndex;
+        
+        private MaterialPropertyBlock props;
+        private static readonly int ColorID = Shader.PropertyToID("_Color");
+
+        protected virtual int GetItemLayer()
+        {
+            return 0;
+        }
+
+        public void Initialize(string itemName)
+        {
+            this.SetMesh(itemName);
+
+            this.itemInfo = LoadObject($"{Consts.ItemInfoRootPath}/{itemName}", false) as ItemInfo;
+        }
+        
+        public void SetColor(Color color)
+        {
+            props ??= new MaterialPropertyBlock();
+            props.SetColor(ColorID, color);
+
+            var meshRenderer = GetComponent<MeshRenderer>();
+            meshRenderer.SetPropertyBlock(props);
+        }
+
+        private void SetMesh(string meshName)
+        {
+            var meshFilter = GetComponent<MeshFilter>();
+            var mesh = this.LoadObject($"{Consts.ItemMeshRootPath}/{meshName}") as Mesh;
+            if (mesh == null)
+            {
+                Debug.LogError($"mesh {meshName} missing or not generated");
+                return;
+            }
+
+            meshFilter.mesh = mesh;
+        }
 
         public void ExpandItem()
         {
@@ -26,7 +62,7 @@ namespace Item
                 return;
             }
 
-            var itemLayer = Game.Instance.GetLayerValue(LayerIndex, false);
+            var itemLayer = GetItemLayer();
             this.gameObject.layer = itemLayer;
             this.gameObject.name = itemInfo.name;
 

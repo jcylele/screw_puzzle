@@ -9,21 +9,21 @@ namespace Stage
     {
         public List<LayerInfo> layerInfos = new List<LayerInfo>();
 
-        public void RemoveLayerByUuid(int uuid)
+        public void RemoveLayer(string layerName)
         {
             for (int i = 0; i < layerInfos.Count; i++)
             {
-                if (layerInfos[i].uuid != uuid) continue;
+                if (layerInfos[i].layerName != layerName) continue;
                 layerInfos.RemoveAt(i);
                 return;
             }
         }
 
-        public int FindLayerIndex(int uuid)
+        public int FindLayerIndex(string layerName)
         {
             for (int i = 0; i < layerInfos.Count; i++)
             {
-                if (layerInfos[i].uuid == uuid)
+                if (layerInfos[i].layerName == layerName)
                 {
                     return i;
                 }
@@ -34,8 +34,8 @@ namespace Stage
 
         public bool CheckConflict()
         {
-            HashSet<int> indices = new HashSet<int>();
-            HashSet<int> uuids = new HashSet<int>();
+            var indices = new HashSet<int>();
+            var names = new HashSet<string>();
             foreach (var info in layerInfos)
             {
                 if (!indices.Add(info.layerIndex))
@@ -44,9 +44,9 @@ namespace Stage
                     return false;
                 }
 
-                if (!uuids.Add(info.uuid))
+                if (!names.Add(info.layerName))
                 {
-                    Debug.LogError($"Duplicate uuid {info.uuid}");
+                    Debug.LogError($"Duplicate uuid {info.layerName}");
                     return false;
                 }
             }

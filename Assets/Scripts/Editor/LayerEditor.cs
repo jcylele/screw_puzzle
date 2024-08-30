@@ -47,7 +47,7 @@ namespace Editor
             if (GUILayout.Button("Add Item",
                     MyEditorStyles.ButtonStyle, GUILayout.Height(35), GUILayout.Width(150)))
             {
-                var itemEditContainer = layer.LoadComponent<ItemEditContainer>(Consts.ItemEditContainer);
+                var itemEditContainer = Resources.Load<ItemEditContainer>(Consts.ItemEditContainer);
                 var container = Instantiate(itemEditContainer, layer.transform);
                 container.gameObject.name = itemNames[selectedItemIndex];
                 container.itemName = itemNames[selectedItemIndex];
