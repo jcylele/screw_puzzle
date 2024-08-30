@@ -1,22 +1,63 @@
 using System.Collections.Generic;
-using Item;
+using Stage;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour
 {
-    private List<ScrewBag> screwBags;
-    private ScrewLine spareScrewLine;
+    [Tooltip("Color for each layer, from top to bottom.")] [SerializeField]
+    private Color[] layerColors = new Color[10]
+    {
+        Color.magenta,
+        Color.green,
+        Color.red,
+        Color.blue,
+        new Color(1, 0.5f, 0),
+        Color.cyan,
+        new Color(0.6f, 0.3f, 0),
+        new Color(0.5f, 0, 0.5f),
+        Color.yellow,
+        Color.gray
+    };
 
-    private readonly RaycastHit2D[] rayHits = new RaycastHit2D[1];
-    private readonly RaycastHit2D[] circleHits = new RaycastHit2D[1];
+    [Tooltip("Pink,Red,Orange,Brown,Yellow,Green,Blue,Cyan,Purple,Gray")] [SerializeField]
+    private Color[] screwColors =
+    {
+        Color.magenta,
+        Color.red,
+        new Color(1, 0.5f, 0),
+        new Color(0.6f, 0.3f, 0),
+        Color.yellow,
+        Color.green,
+        Color.blue,
+        Color.cyan,
+        new Color(0.5f, 0, 0.5f),
+        Color.gray
+    };
+    public StagePlayBehaviour stagePlayPrefab;
+    public int randomSeed = 0;
+    public StageInfo stageInfo;
+    
+    private List<ScrewBag> screwBags;
+    private SpareScrewBag spareSpareScrewBag;
+    private readonly List<int> layerValues = new List<int>(Consts.MaxLayerCount);
 
     public static Game Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
-        Random.InitState(0);
+        Random.InitState(randomSeed);
+        for (int i = 0; i < Consts.MaxLayerCount; i++)
+        {
+            var layerVal = LayerMask.NameToLayer($"ItemLayer{i + 1}");
+            layerValues.Add(layerVal);
+        }
+    }
+
+    public int GetLayerValue(int layerIndex, bool isMask)
+    {
+        return isMask ? 1 << layerValues[layerIndex - 1] : layerValues[layerIndex - 1];
     }
 
     public ScrewColor GetNextColor()
@@ -26,6 +67,10 @@ public class Game : MonoBehaviour
 
     private void Start()
     {
+        var stagePlayBehaviour = Instantiate(stagePlayPrefab, transform);
+        stagePlayBehaviour.stageInfo = stageInfo;
+        stagePlayBehaviour.ExpandStage();
+        
         this.screwBags = new List<ScrewBag>(Consts.BagCount);
         for (int i = 0; i < Consts.BagCount; i++)
         {
@@ -34,7 +79,9 @@ public class Game : MonoBehaviour
             screwBags.Add(bag);
         }
 
-        this.spareScrewLine = new ScrewLine();
+        this.spareSpareScrewBag = new SpareScrewBag();
+
+        NotifyUI();
     }
 
     private ScrewBag GetScrewBag(ScrewColor color)
@@ -50,6 +97,11 @@ public class Game : MonoBehaviour
         return null;
     }
 
+    public void OnGameEnd(bool isWin)
+    {
+        Debug.Log(isWin ? "Win" : "Lose");
+    }
+
     private void OnScrewDrop(ScrewColor screwColor)
     {
         if (screwColor == ScrewColor.None)
@@ -61,12 +113,13 @@ public class Game : MonoBehaviour
         var screwBag = GetScrewBag(screwColor);
         if (screwBag == null)
         {
-            spareScrewLine.PutScrew(screwColor);
-            if (spareScrewLine.IsFull)
+            spareSpareScrewBag.PutScrew(screwColor);
+            if (spareSpareScrewBag.IsFull)
             {
-                Debug.Log("Game Over!");
+                OnGameEnd(false);
             }
 
+            NotifyUI();
             return;
         }
 
@@ -76,9 +129,11 @@ public class Game : MonoBehaviour
         {
             var newColor = GetNextColor();
             screwBag.Refresh(newColor);
-            var spareCount = spareScrewLine.TakeScrew(newColor);
+            var spareCount = spareSpareScrewBag.TakeScrew(newColor);
             screwBag.PutScrew(spareCount);
         }
+
+        NotifyUI();
     }
 
     private void Update()
@@ -86,38 +141,42 @@ public class Game : MonoBehaviour
         // left mouse button down
         if (Input.GetMouseButtonDown(0))
         {
-            OnClick();
+            var jointPlay = StagePlayBehaviour.Instance.RaycastJoint();
+            if (jointPlay == null)
+            {
+                return;
+            }
+
+            this.OnScrewDrop(jointPlay.UnScrew());
         }
     }
 
-    private void OnClick()
+    public Color GetLayerColor(int layerIndex)
     {
-        // Debug.Log("Mouse0 Down");
-        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        var rayHitCount = Physics2D.RaycastNonAlloc(mousePos, Vector2.zero, rayHits);
-        if (rayHitCount == 0) return;
-
-        // Debug.Log(hit.collider);
-        var item = rayHits[0].collider.GetComponentInParent<ItemPlayBehaviour>();
-        if (item == null) return;
-
-        // Debug.Log(item);
-        var jointPlay = item.GetJointByHit(rayHits[0].point);
-        if (jointPlay == null) return;
-
-        // check if the joint is covered by other items
-        var circleHitCount = Physics2D.CircleCastNonAlloc(jointPlay.WorldPosition, Consts.JointCollisionRadius,
-            Vector2.zero, circleHits);
-        if (circleHitCount == 0)
-        {
-            Debug.LogError("WTF, circleHitCount == 0");
-            return;
-        }
-
-        var item2 = circleHits[0].collider.GetComponentInParent<ItemPlayBehaviour>();
-        // covered by other items
-        if (item2 != item) return;
-
-        this.OnScrewDrop(jointPlay.OnClick());
+        return layerColors[layerIndex - 1];
     }
+
+    public Color GetScrewColor(ScrewColor color)
+    {
+        return color == ScrewColor.None ? Color.white : screwColors[(int)color - 1];
+    }
+
+    #region UI related
+
+    public ScrewBag GetScrewBag(int index)
+    {
+        return screwBags[index];
+    }
+
+    public List<ScrewColor> GetSpareScrewList()
+    {
+        return spareSpareScrewBag.spareScrews;
+    }
+
+    private void NotifyUI()
+    {
+        GameUI.GameUI.Instance.Refresh();
+    }
+
+    #endregion
 }

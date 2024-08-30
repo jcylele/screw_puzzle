@@ -11,7 +11,7 @@ namespace Stage
             this.gameObject.SetActive(false);
         }
 
-        public override void ExpandStage()
+        public void ExpandStage()
         {
             if (stageInfo == null)
             {
@@ -47,7 +47,7 @@ namespace Stage
             return layer;
         }
 
-        public override void ClearStage()
+        public void ClearStage()
         {
             var layers = GetComponentsInChildren<LayerEditBehaviour>(true);
             foreach (var layer in layers)

@@ -13,7 +13,6 @@ namespace Item
 
             var item = Instantiate(itemEditPrefab, transform);
             item.itemInfo = Resources.Load<ItemInfo>($"{Consts.ItemInfoRootPath}/{itemName}");
-            item.BelongLayerBehaviour = layerBehaviour;
             item.ExpandItem();
 
             item.gameObject.hideFlags = HideFlags.HideInHierarchy;

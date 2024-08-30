@@ -10,20 +10,6 @@ namespace Item
     {
         public float alpha = 0.8f;
 
-        public Color[] layerColors = new Color[10]
-        {
-            Color.magenta,
-            Color.red,
-            new Color(1, 0.5f, 0),
-            new Color(0.6f, 0.3f, 0),
-            Color.yellow,
-            Color.green,
-            Color.blue,
-            Color.cyan,
-            new Color(0.5f, 0, 0.5f),
-            Color.gray
-        };
-
         protected override string BoxColliderPrefabPath => Consts.BoxColliderPlay;
         protected override string CapsuleColliderPrefabPath => Consts.CapsuleColliderPlay;
         protected override string CircleColliderPrefabPath => Consts.CircleColliderPlay;
@@ -89,6 +75,11 @@ namespace Item
             Destroy(gameObject);
         }
 
+        public override string ToString()
+        {
+            return $"{itemInfo.name} of layer {LayerIndex}";
+        }
+
         private void GenerateMesh()
         {
             var mesh = new Mesh
@@ -152,7 +143,7 @@ namespace Item
             meshRenderer.materials = mats;
 
             props ??= new MaterialPropertyBlock();
-            var color = this.layerColors[BelongLayerBehaviour.LayerInfo.layerIndex - 1];
+            var color = Game.Instance.GetLayerColor(LayerIndex);
             color.a = alpha;
             props.SetColor(ColorID, color);
             meshRenderer.SetPropertyBlock(props);

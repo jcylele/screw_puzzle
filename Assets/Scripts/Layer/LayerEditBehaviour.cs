@@ -13,7 +13,7 @@ namespace Layer
             this.gameObject.SetActive(false);
         }
 
-        public override void ExpandLayer()
+        public void ExpandLayer()
         {
             if (LayerInfo == null)
             {
@@ -41,7 +41,7 @@ namespace Layer
             }
         }
 
-        public override void ClearLayer()
+        public void ClearLayer()
         {
             this.RefreshLayerPosition();
 

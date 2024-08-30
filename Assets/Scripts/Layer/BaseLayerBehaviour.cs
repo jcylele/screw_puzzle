@@ -1,5 +1,4 @@
-﻿using Item;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Layer
 {
@@ -12,12 +11,9 @@ namespace Layer
         /// </summary>
         protected int ItemCount { get; set; }
 
-        public int ItemLayer { get; private set; }
-
         public void SetLayerInfo(LayerInfo layerInfo)
         {
             this.LayerInfo = layerInfo;
-            this.ItemLayer = LayerMask.NameToLayer($"ItemLayer{layerInfo.layerIndex}");
             this.Rename();
         }
 
@@ -33,13 +29,6 @@ namespace Layer
         public void Rename()
         {
             this.gameObject.name = LayerInfo.ItemName;
-        }
-
-        public abstract void ExpandLayer();
-        public abstract void ClearLayer();
-
-        public virtual void OnItemFallToGround(BaseItemBehaviour itemBehaviour)
-        {
         }
     }
 }

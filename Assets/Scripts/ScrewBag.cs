@@ -3,7 +3,7 @@
 public class ScrewBag
 {
     public ScrewColor BagColor { get; private set; }
-    private int ScrewCount { get; set; }
+    public int ScrewCount { get; private set; }
 
     public bool IsFull => this.ScrewCount == Consts.SlotPerBag;
 

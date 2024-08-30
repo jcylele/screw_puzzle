@@ -1,11 +1,14 @@
 ﻿using Item;
+using Stage;
 using UnityEngine;
 
 namespace Layer
 {
     public class LayerPlayBehaviour : BaseLayerBehaviour
     {
-        public override void ExpandLayer()
+        public StagePlayBehaviour BelongStageBehaviour { get; set; }
+
+        public void ExpandLayer()
         {
             if (LayerInfo == null)
             {
@@ -41,24 +44,12 @@ namespace Layer
             }
         }
 
-        public override void ClearLayer()
-        {
-            // set layer position
-            this.RefreshLayerPosition();
-
-            foreach (var item in GetComponentsInChildren<ItemPlayBehaviour>())
-            {
-                Destroy(item.gameObject);
-            }
-        }
-
-        public override void OnItemFallToGround(BaseItemBehaviour itemBehaviour)
+        public void OnItemFallToGround(BaseItemBehaviour itemBehaviour)
         {
             this.ItemCount--;
-            if (this.ItemCount == 0)
-            {
-                Destroy(gameObject);
-            }
+            if (this.ItemCount != 0) return;
+            this.BelongStageBehaviour.OnLayerComplete(this);
+            Destroy(gameObject);
         }
     }
 }

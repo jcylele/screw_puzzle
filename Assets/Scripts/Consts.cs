@@ -20,7 +20,7 @@ public static class Consts
 
     public const int SlotPerBag = 3;
     public const int BagCount = 3;
-    public const int MaxSpareSlotCount = 5;
+    public const int SpareSlotCount = 5;
 
     #endregion
 
@@ -59,8 +59,8 @@ public static class Consts
 
     #region 其他Asset文件夹
 
-    public const string ItemInfoRootPath = "Items";
-    public const string StageInfoRootPath = "Stages";
+    public const string ItemInfoRootPath = "data/Items";
+    public const string StageInfoRootPath = "data/Stages";
 
     #endregion
 
@@ -71,6 +71,6 @@ public static class Consts
 
     #endregion
 
-    // one unit in scene is 72 pixel on ui
-    public const float PixelPerUnit = 72f;
+    // one unit in scene is 320 pixel on ui
+    public const float PixelPerUnit = 320f;
 }

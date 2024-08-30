@@ -9,7 +9,8 @@ namespace Item
         protected abstract string BoxColliderPrefabPath { get; }
         protected abstract string CapsuleColliderPrefabPath { get; }
         protected abstract string CircleColliderPrefabPath { get; }
-        public BaseLayerBehaviour BelongLayerBehaviour { get; set; }
+        public LayerPlayBehaviour BelongLayerBehaviour { get; set; }
+        public int LayerIndex => BelongLayerBehaviour.LayerInfo.layerIndex;
 
         public void ExpandItem()
         {
@@ -24,8 +25,9 @@ namespace Item
                 Debug.LogError("Item has been expanded, please clear it first.");
                 return;
             }
-            
-            this.gameObject.layer = BelongLayerBehaviour.ItemLayer;
+
+            var itemLayer = Game.Instance.GetLayerValue(LayerIndex, false);
+            this.gameObject.layer = itemLayer;
             this.gameObject.name = itemInfo.name;
 
             // Instantiate colliders
@@ -33,7 +35,7 @@ namespace Item
             foreach (var capsuleColliderInfo in itemInfo.capsuleColliders)
             {
                 var capsule = Instantiate(capsulePrefab, transform);
-                capsule.gameObject.layer = BelongLayerBehaviour.ItemLayer;
+                capsule.gameObject.layer = itemLayer;
                 // set properties of capsule collider
                 this.SetCapsuleColliderProperties(capsule, capsuleColliderInfo);
                 // extra process
@@ -44,7 +46,7 @@ namespace Item
             foreach (var boxColliderInfo in itemInfo.boxColliders)
             {
                 var box = Instantiate(boxPrefab, transform);
-                box.gameObject.layer = BelongLayerBehaviour.ItemLayer;
+                box.gameObject.layer = itemLayer;
                 // set properties of capsule collider
                 this.SetBoxColliderProperties(box, boxColliderInfo);
                 // extra process
@@ -55,7 +57,7 @@ namespace Item
             foreach (var circleColliderInfo in itemInfo.circleColliders)
             {
                 var circle = Instantiate(circlePrefab, transform);
-                circle.gameObject.layer = BelongLayerBehaviour.ItemLayer;
+                circle.gameObject.layer = itemLayer;
                 // set properties of capsule collider
                 this.SetCircleColliderProperties(circle, circleColliderInfo);
                 // extra process
