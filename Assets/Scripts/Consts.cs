@@ -1,16 +1,19 @@
-﻿public enum ScrewColor
+﻿/// <summary>
+/// 必须与Game.screwColors顺序一致
+/// </summary>
+public enum ScrewColor
 {
     None,
-    Pink,
     Red,
-    Orange,
-    Brown,
-    Yellow,
     Green,
     Blue,
-    Cyan,
-    Purple,
     Gray,
+    Yellow,
+    Magenta,
+    Purple,
+    Brown,
+    Cyan,
+    Orange,
     Max,
 }
 

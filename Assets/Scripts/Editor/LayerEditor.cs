@@ -23,6 +23,10 @@ namespace Editor
                 var itemName = Path.GetFileNameWithoutExtension(itemInfoPath);
                 itemNames[i] = itemName;
             }
+            
+            // Get the Stage script
+            var layer = (LayerEditBehaviour)target;
+            layer.gameObject.hideFlags |= HideFlags.DontSaveInEditor|HideFlags.DontSaveInBuild;
         }
 
         public override void OnInspectorGUI()

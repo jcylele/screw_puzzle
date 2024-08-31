@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Item;
-using Layer;
+﻿using Layer;
 using Stage;
 using UnityEditor;
 using UnityEngine;

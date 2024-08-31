@@ -9,7 +9,7 @@ namespace Stage
     {
         public static StagePlayBehaviour Instance { get; private set; }
 
-        private readonly List<BaseLayerBehaviour> layers = new List<BaseLayerBehaviour>(Consts.MaxLayerCount);
+        private readonly List<LayerPlayBehaviour> layers = new List<LayerPlayBehaviour>(Consts.MaxLayerCount);
 
         private Camera mainCamera;
 
@@ -35,7 +35,7 @@ namespace Stage
 
         public override void OnLayerComplete(BaseLayerBehaviour layer)
         {
-            layers.Remove(layer);
+            layers.Remove(layer as LayerPlayBehaviour);
             if (layers.Count == 0)
             {
                 Game.Instance.OnGameEnd(true);

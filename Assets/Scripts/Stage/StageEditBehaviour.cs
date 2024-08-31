@@ -87,14 +87,7 @@ namespace Stage
 
             stageInfo.layerInfos.Sort((a, b) => a.layerIndex.CompareTo(b.layerIndex));
 
-            SaveAsset();
-        }
-
-        private void SaveAsset()
-        {
-            UnityEditor.EditorUtility.SetDirty(stageInfo);
-            UnityEditor.AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
+            stageInfo.SaveAsset();
         }
 #endif
     }

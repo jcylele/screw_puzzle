@@ -52,5 +52,23 @@ namespace Item
         {
             return capsuleColliders.Count + boxColliders.Count + circleColliders.Count;
         }
+        
+        public int GetTotalJointCount()
+        {
+            var totalJointPointCount = 0;
+            foreach (var colliderInfo in capsuleColliders)
+            {
+                totalJointPointCount += colliderInfo.jointPoints.Count;
+            }
+            foreach (var colliderInfo in boxColliders)
+            {
+                totalJointPointCount += colliderInfo.jointPoints.Count;
+            }
+            foreach (var colliderInfo in circleColliders)
+            {
+                totalJointPointCount += colliderInfo.jointPoints.Count;
+            }
+            return totalJointPointCount;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Layer;
 using ProceduralMeshes.Generators;
 using ProceduralMeshes.Streams;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace Item
         protected override string CircleColliderPrefabPath => Consts.CircleColliderPlay;
 
         private readonly List<JointPlayBehaviour> jointPlayList = new List<JointPlayBehaviour>();
+
+        public LayerPlayBehaviour BelongLayerBehaviour { get; set; }
 
         /// <summary>
         /// used multiple times, so cache it
@@ -45,7 +48,12 @@ namespace Item
             jointPlay.transform.localPosition = jointPosition;
             jointPlay.joint = joint2D;
 
-            jointPlay.ScrewColor = Game.Instance.GetNextColor();
+            var jointColor = Game.Instance.GetNextJointColor();
+            jointPlay.ScrewColor = jointColor;
+            if (jointColor == ScrewColor.None)
+            {
+                Debug.LogError("WTF, joint color is none");
+            }
 
             jointPlayList.Add(jointPlay);
         }

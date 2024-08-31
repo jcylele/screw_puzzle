@@ -8,23 +8,29 @@ public class Game : MonoBehaviour
     [Tooltip("Pink,Red,Orange,Brown,Yellow,Green,Blue,Cyan,Purple,Gray")] [SerializeField]
     private Color[] screwColors =
     {
-        Color.magenta,
         Color.red,
-        new Color(1, 0.5f, 0),
-        new Color(0.6f, 0.3f, 0),
-        Color.yellow,
         Color.green,
         Color.blue,
+        Color.gray,
+        Color.yellow,
+        Color.magenta,
+        new Color(0.5f, 0, 0.5f), // purple
+        new Color(1, 0.5f, 0), // brown
         Color.cyan,
-        new Color(0.5f, 0, 0.5f),
-        Color.gray
+        new Color(0.6f, 0.3f, 0), // orange
     };
+
     public StagePlayBehaviour stagePlayPrefab;
-    public int randomSeed = 0;
     public StageInfo stageInfo;
-    
+    public int randomSeed = 0;
+
+    [Range(Consts.BagCount, (int)(ScrewColor.Max - 1))] [Tooltip("Color count in game")]
+    public int colorCount = 10;
+
+    private StagePlayBehaviour stagePlayBehaviour;
     private List<ScrewBag> screwBags;
-    private SpareScrewBag spareSpareScrewBag;
+    private SpareScrewBag spareScrewBag;
+    private GameColorMgr gameColorMgr;
     private readonly List<int> layerValues = new List<int>(Consts.MaxLayerCount);
 
     public static Game Instance { get; private set; }
@@ -38,6 +44,12 @@ public class Game : MonoBehaviour
             var layerVal = LayerMask.NameToLayer($"ItemLayer{i + 1}");
             layerValues.Add(layerVal);
         }
+
+        if (!RandomColors())
+        {
+            gameObject.SetActive(false);
+            return;
+        }
     }
 
     public int GetLayerValue(int layerIndex, bool isMask)
@@ -45,26 +57,28 @@ public class Game : MonoBehaviour
         return isMask ? 1 << layerValues[layerIndex - 1] : layerValues[layerIndex - 1];
     }
 
-    public ScrewColor GetNextColor()
+
+    public int RandomNext(int min, int max)
     {
-        return (ScrewColor)Random.Range(1, (int)ScrewColor.Max);
+        return Random.Range(min, max);
     }
 
     private void Start()
     {
-        var stagePlayBehaviour = Instantiate(stagePlayPrefab, transform);
+        stagePlayBehaviour = Instantiate(stagePlayPrefab, transform);
         stagePlayBehaviour.stageInfo = stageInfo;
         stagePlayBehaviour.ExpandStage();
-        
+
         this.screwBags = new List<ScrewBag>(Consts.BagCount);
         for (int i = 0; i < Consts.BagCount; i++)
         {
             var bag = new ScrewBag();
-            bag.Refresh(GetNextColor());
+            var bagColor = gameColorMgr.UseColor();
+            bag.Refresh(bagColor);
             screwBags.Add(bag);
         }
 
-        this.spareSpareScrewBag = new SpareScrewBag();
+        this.spareScrewBag = new SpareScrewBag();
 
         NotifyUI();
     }
@@ -96,10 +110,11 @@ public class Game : MonoBehaviour
         }
 
         var screwBag = GetScrewBag(screwColor);
+        // put to spare bag
         if (screwBag == null)
         {
-            spareSpareScrewBag.PutScrew(screwColor);
-            if (spareSpareScrewBag.IsFull)
+            spareScrewBag.PutScrew(screwColor);
+            if (spareScrewBag.IsFull)
             {
                 OnGameEnd(false);
             }
@@ -109,12 +124,24 @@ public class Game : MonoBehaviour
         }
 
         screwBag.PutScrew();
+
         // may happen multiple times
         while (screwBag.IsFull)
         {
-            var newColor = GetNextColor();
+            // use nww color before unuse current color, can avoid the same color
+            var newColor = gameColorMgr.UseColor();
+            
+            // unuse current color
+            if (!gameColorMgr.UnuseColor(screwBag.BagColor))
+            {
+                return;
+            }
+            
+            // refresh bag color
             screwBag.Refresh(newColor);
-            var spareCount = spareSpareScrewBag.TakeScrew(newColor);
+
+            // put spare screws of the new color into new bag
+            var spareCount = spareScrewBag.TakeScrew(newColor);
             screwBag.PutScrew(spareCount);
         }
 
@@ -141,6 +168,51 @@ public class Game : MonoBehaviour
         return color == ScrewColor.None ? Color.white : screwColors[(int)color - 1];
     }
 
+    #region Color Random related
+
+    private bool RandomColors()
+    {
+        if (stageInfo.jointCount % Consts.SlotPerBag != 0)
+        {
+            Debug.LogError("Joint count is not multiple of slot per bag");
+            return false;
+        }
+
+        var bagCount = stageInfo.jointCount / Consts.SlotPerBag;
+        if (bagCount < colorCount)
+        {
+            Debug.LogError($"joint count {stageInfo.jointCount} is not enough for color count {colorCount}");
+            return false;
+        }
+
+        gameColorMgr = new GameColorMgr(this);
+        // ensure each color has at least one bag
+        for (int i = 0; i < colorCount; i++)
+        {
+            var color = (ScrewColor)(i + 1);
+            gameColorMgr.AddColor(color);
+        }
+
+        // random the rest bags
+        bagCount -= colorCount;
+        for (var i = 0; i < bagCount; i++)
+        {
+            var bagColor = (ScrewColor)RandomNext(1, colorCount + 1);
+            gameColorMgr.AddColor(bagColor);
+        }
+
+        gameColorMgr.ShuffleJointColors();
+
+        return true;
+    }
+
+    public ScrewColor GetNextJointColor()
+    {
+        return gameColorMgr.GetNextJointColor();
+    }
+
+    #endregion
+
     #region UI related
 
     public ScrewBag GetScrewBag(int index)
@@ -150,7 +222,7 @@ public class Game : MonoBehaviour
 
     public List<ScrewColor> GetSpareScrewList()
     {
-        return spareSpareScrewBag.spareScrews;
+        return spareScrewBag.spareScrews;
     }
 
     private void NotifyUI()

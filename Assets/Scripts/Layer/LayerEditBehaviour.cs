@@ -109,27 +109,15 @@ namespace Layer
 
             if (saveAsset)
             {
-                SaveAsset(stageInfo);
+                stageInfo.SaveAsset();
             }
-        }
-
-        private void SaveAsset(StageInfo stageInfo)
-        {
-            if (!stageInfo.CheckConflict())
-            {
-                return;
-            }
-
-            UnityEditor.EditorUtility.SetDirty(stageInfo);
-            UnityEditor.AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
         }
 
         public void RemoveLayer()
         {
             var stage = GetComponentInParent<StageEditBehaviour>();
             stage.stageInfo.RemoveLayer(LayerInfo.layerName);
-            SaveAsset(stage.stageInfo);
+            stage.stageInfo.SaveAsset();
 
             DestroyImmediate(gameObject);
         }

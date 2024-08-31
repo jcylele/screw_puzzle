@@ -9,8 +9,7 @@ namespace Item
         protected abstract string BoxColliderPrefabPath { get; }
         protected abstract string CapsuleColliderPrefabPath { get; }
         protected abstract string CircleColliderPrefabPath { get; }
-        public LayerPlayBehaviour BelongLayerBehaviour { get; set; }
-        
+
         private MaterialPropertyBlock props;
         private static readonly int ColorID = Shader.PropertyToID("_Color");
 
@@ -35,9 +34,14 @@ namespace Item
             meshRenderer.SetPropertyBlock(props);
         }
 
-        private void SetMesh(string meshName)
+        public void SetMesh(string meshName)
         {
             var meshFilter = GetComponent<MeshFilter>();
+            if (string.IsNullOrEmpty(meshName))
+            {
+                meshFilter.mesh = null;
+                return;
+            }
             var mesh = this.LoadObject($"{Consts.ItemMeshRootPath}/{meshName}") as Mesh;
             if (mesh == null)
             {

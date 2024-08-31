@@ -4,23 +4,24 @@ namespace Item
 {
     public class JointPlayBehaviour : BaseBehaviour
     {
+        private static readonly int ColorID = Shader.PropertyToID("_Color");
+        
+        public HingeJoint2D joint;
+        
         [SerializeField]
-        private ScrewColor screwColor;
+        private MeshRenderer screwRenderer;
+        
+        [SerializeField]
+        private ScrewColor screwColor = ScrewColor.None;
 
         public ScrewColor ScrewColor
         {
             get => screwColor;
             set => SetScrewColor(value);
         }
-
-        public HingeJoint2D joint;
-
-        [SerializeField]
-        private MeshRenderer screwRenderer;
-
+        
         private MaterialPropertyBlock props;
-        private static readonly int ColorID = Shader.PropertyToID("_Color");
-
+        
         private void SetScrewColor(ScrewColor sc)
         {
             screwColor = sc;

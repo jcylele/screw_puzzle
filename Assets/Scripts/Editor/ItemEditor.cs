@@ -78,11 +78,13 @@ namespace Editor
 
             if (GUILayout.Button("Expand Item", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
+                itemEditBehaviour.SetMesh(itemEditBehaviour.itemInfo.name);
                 itemEditBehaviour.ExpandItem();
             }
 
             if (GUILayout.Button("Collapse Item", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
+                itemEditBehaviour.SetMesh("");
                 itemEditBehaviour.ClearItem();
             }
 

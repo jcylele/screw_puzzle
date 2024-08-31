@@ -1,10 +1,13 @@
-﻿using Item;
+﻿using System.Collections.Generic;
+using Item;
 using UnityEngine;
 
 namespace Layer
 {
     public class LayerPlayBehaviour : BaseLayerBehaviour
     {
+        private readonly List<ItemPlayBehaviour> items = new List<ItemPlayBehaviour>();
+
         public void ExpandLayer()
         {
             if (LayerInfo == null)
@@ -35,15 +38,15 @@ namespace Layer
                 item.Initialize(itemPosInfo.itemName);
                 item.SetColor(layerColor);
                 item.ExpandItem();
-            }
 
-            this.ItemCount = LayerInfo.itemPosInfos.Count;
+                items.Add(item);
+            }
         }
 
         public void OnItemFallToGround(BaseItemBehaviour itemBehaviour)
         {
-            this.ItemCount--;
-            if (this.ItemCount != 0) return;
+            items.Remove(itemBehaviour as ItemPlayBehaviour);
+            if (items.Count > 0) return;
             this.BelongStageBehaviour.OnLayerComplete(this);
             Destroy(gameObject);
         }

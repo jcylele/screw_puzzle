@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54806260281b44609efc87888e55a128, type: 3}
   m_Name: stage2
   m_EditorClassIdentifier: 
+  jointCount: 36
   layerInfos:
   - layerIndex: 1
     layerName: bone_rect
@@ -50,3 +51,10 @@ MonoBehaviour:
       transInfo:
         position: {x: 0, y: 3.47, z: 0}
         rotation: {x: -0, y: -0, z: -0, w: 1}
+  - layerIndex: 4
+    layerName: bottom
+    itemPosInfos:
+    - itemName: box
+      transInfo:
+        position: {x: 0, y: -0.09, z: 0}
+        rotation: {x: 0, y: 0, z: 0, w: 1}

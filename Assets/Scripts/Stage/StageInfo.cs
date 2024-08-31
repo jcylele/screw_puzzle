@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Item;
 using Layer;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace Stage
     [CreateAssetMenu(fileName = "StageInfo", menuName = "Screw/StageInfo", order = 2)]
     public class StageInfo : ScriptableObject
     {
+        [ReadOnly]
+        public int jointCount;
+
         public List<LayerInfo> layerInfos = new List<LayerInfo>();
 
         public void RemoveLayer(string layerName)
@@ -32,7 +36,9 @@ namespace Stage
             return -1;
         }
 
-        public bool CheckConflict()
+#if UNITY_EDITOR
+
+        private bool CheckDuplicate()
         {
             var indices = new HashSet<int>();
             var names = new HashSet<string>();
@@ -53,5 +59,50 @@ namespace Stage
 
             return true;
         }
+
+        private void CalcJointCount()
+        {
+            var itemNameCount = new Dictionary<string, int>();
+            foreach (var layerInfo in layerInfos)
+            {
+                foreach (var itemPosInfo in layerInfo.itemPosInfos)
+                {
+                    if (!itemNameCount.ContainsKey(itemPosInfo.itemName))
+                    {
+                        itemNameCount[itemPosInfo.itemName] = 0;
+                    }
+
+                    itemNameCount[itemPosInfo.itemName]++;
+                }
+            }
+
+            jointCount = 0;
+            foreach (var pair in itemNameCount)
+            {
+                var itemInfo = Resources.Load<ItemInfo>($"{Consts.ItemInfoRootPath}/{pair.Key}");
+                if (itemInfo == null)
+                {
+                    Debug.LogError($"ItemInfo not found: {pair.Key}");
+                }
+
+                jointCount += pair.Value * itemInfo.GetTotalJointCount();
+            }
+
+            if (jointCount % Consts.SlotPerBag != 0)
+            {
+                Debug.LogError($"Joint count {jointCount} is not a multiple of {Consts.SlotPerBag}");
+            }
+        }
+
+        public void SaveAsset()
+        {
+            CheckDuplicate();
+            CalcJointCount();
+
+            UnityEditor.EditorUtility.SetDirty(this);
+            UnityEditor.AssetDatabase.SaveAssets();
+            UnityEditor.AssetDatabase.Refresh();
+        }
+#endif
     }
 }
