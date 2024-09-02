@@ -22,7 +22,8 @@ public static class Consts
     #region 背包相关
 
     public const int SlotPerBag = 3;
-    public const int BagCount = 3;
+
+    // public const int BagCount = 3;
     public const int SpareSlotCount = 5;
 
     #endregion
@@ -57,6 +58,10 @@ public static class Consts
     public const string BoxColliderPlay = PrefabRootPath + "box_collider_play";
     public const string CircleColliderEdit = PrefabRootPath + "circle_collider_edit";
     public const string CircleColliderPlay = PrefabRootPath + "circle_collider_play";
+    public const string PolygonColliderEdit = PrefabRootPath + "polygon_collider_edit";
+    public const string PolygonColliderPlay = PrefabRootPath + "polygon_collider_play";
+    public const string BezierColliderEdit = PrefabRootPath + "bezier_collider_edit";
+    public const string BezierColliderPlay = PrefabRootPath + "bezier_collider_play";
 
     #endregion
 

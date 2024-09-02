@@ -22,10 +22,15 @@ public class Game : MonoBehaviour
 
     public StagePlayBehaviour stagePlayPrefab;
     public StageInfo stageInfo;
-    public int randomSeed = 0;
 
-    [Range(Consts.BagCount, (int)(ScrewColor.Max - 1))] [Tooltip("Color count in game")]
+    [Range(1, (int)(ScrewColor.Max - 1))] [Tooltip("Color count in game")]
     public int colorCount = 10;
+
+    [Range(2, 5)] [Tooltip("Bag count in game")]
+    public int bagCount = 3;
+
+    [Tooltip("Random seed, determine the color and bag order")]
+    public int randomSeed = 0;
 
     private StagePlayBehaviour stagePlayBehaviour;
     private List<ScrewBag> screwBags;
@@ -69,8 +74,8 @@ public class Game : MonoBehaviour
         stagePlayBehaviour.stageInfo = stageInfo;
         stagePlayBehaviour.ExpandStage();
 
-        this.screwBags = new List<ScrewBag>(Consts.BagCount);
-        for (int i = 0; i < Consts.BagCount; i++)
+        this.screwBags = new List<ScrewBag>(bagCount);
+        for (int i = 0; i < bagCount; i++)
         {
             var bag = new ScrewBag();
             var bagColor = gameColorMgr.UseColor();
@@ -130,13 +135,13 @@ public class Game : MonoBehaviour
         {
             // use nww color before unuse current color, can avoid the same color
             var newColor = gameColorMgr.UseColor();
-            
+
             // unuse current color
             if (!gameColorMgr.UnuseColor(screwBag.BagColor))
             {
                 return;
             }
-            
+
             // refresh bag color
             screwBag.Refresh(newColor);
 

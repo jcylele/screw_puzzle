@@ -12,6 +12,8 @@ namespace Item
         protected override string BoxColliderPrefabPath => Consts.BoxColliderEdit;
         protected override string CapsuleColliderPrefabPath => Consts.CapsuleColliderEdit;
         protected override string CircleColliderPrefabPath => Consts.CircleColliderEdit;
+        protected override string PolygonColliderPrefabPath => Consts.PolygonColliderEdit;
+        protected override string BezierColliderPrefabPath => Consts.BezierColliderEdit;
 
         protected override void AddJoint(Vector3 jointPosition, Transform colliderTrans)
         {
@@ -47,6 +49,16 @@ namespace Item
             return AddCollider<CircleCollider2D>(CircleColliderPrefabPath);
         }
 
+        public PolygonCollider2D AddPolygonCollider()
+        {
+            return AddCollider<PolygonCollider2D>(PolygonColliderPrefabPath);
+        }
+
+        public PolygonCollider2D AddBezierCollider()
+        {
+            return AddCollider<PolygonCollider2D>(BezierColliderPrefabPath);
+        }
+
         public void ClearItem()
         {
             // Destroy all the colliders
@@ -78,6 +90,8 @@ namespace Item
             itemInfo.capsuleColliders = GetCapsuleColliders();
             itemInfo.boxColliders = GetBoxColliders();
             itemInfo.circleColliders = GetCircleColliders();
+            itemInfo.polygonColliders = GetPolygonColliders();
+            itemInfo.bezierColliders = GetBezierBehaviours();
 
             UnityEditor.EditorUtility.SetDirty(itemInfo);
             UnityEditor.AssetDatabase.SaveAssets();
@@ -156,6 +170,50 @@ namespace Item
             return circleColliderInfos;
         }
 
+        private List<PolygonColliderInfo> GetPolygonColliders()
+        {
+            var polygons = GetComponentsInChildren<PolygonCollider2D>(false);
+            var polygonColliderInfos = new List<PolygonColliderInfo>(polygons.Length);
+            foreach (var polygon in polygons)
+            {
+                // skip polygons controlled by bezier curve
+                var bezierCurve = polygon.GetComponent<BezierCurveBehaviour>();
+                if (bezierCurve != null)
+                {
+                    continue;
+                }
+
+                var polygonColliderInfo = new PolygonColliderInfo
+                {
+                    transInfo = GetTransInfo(true, polygon.transform),
+                    jointPoints = GetJointPoints(polygon),
+                    offset = polygon.offset,
+                    path = polygon.GetPath(0)
+                };
+                polygonColliderInfos.Add(polygonColliderInfo);
+            }
+
+            return polygonColliderInfos;
+        }
+
+        private List<BezierColliderInfo> GetBezierBehaviours()
+        {
+            var bezierBehaviours = GetComponentsInChildren<BezierCurveBehaviour>(false);
+            var bezierColliderInfos = new List<BezierColliderInfo>(bezierBehaviours.Length);
+            foreach (var bezierCurve in bezierBehaviours)
+            {
+                var bezierColliderInfo = new BezierColliderInfo
+                {
+                    transInfo = GetTransInfo(true, bezierCurve.transform),
+                    jointPoints = GetJointPoints(bezierCurve),
+                    points = bezierCurve.points,
+                    steps = bezierCurve.steps
+                };
+                bezierColliderInfos.Add(bezierColliderInfo);
+            }
+
+            return bezierColliderInfos;
+        }
 
         public void GenerateMesh()
         {
@@ -227,6 +285,7 @@ namespace Item
                 BoxCollider2D boxCollider2D => new BoxMeshInfo(boxCollider2D),
                 CircleCollider2D circleCollider2D => new CircleMeshInfo(circleCollider2D),
                 CapsuleCollider2D capsuleCollider2D => new CapsuleMeshInfo(capsuleCollider2D),
+                PolygonCollider2D polygonCollider2D => new PolygonMeshInfo(polygonCollider2D),
                 // PolygonCollider2D polygonCollider2D => new PolygonMeshInfo(polygonCollider2D),
                 _ => throw new ArgumentOutOfRangeException($"unsupported collider2d type {col2D.GetType()}")
             };

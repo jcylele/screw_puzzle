@@ -26,10 +26,10 @@ namespace ColliderMesh
                 sectorMeshInfos = new List<SectorMeshInfo>(4)
                 {
                     // clockwise
-                    new SectorMeshInfo(new float2(max.x, min.y), radius, 270f, 360f),
-                    new SectorMeshInfo(new float2(min.x, min.y), radius, 180f, 270f),
-                    new SectorMeshInfo(new float2(min.x, max.y), radius, 90f, 180f),
-                    new SectorMeshInfo(new float2(max.x, max.y), radius, 0f, 90f),
+                    new SectorMeshInfo(new Vector2(max.x, min.y), radius, 270f, 360f),
+                    new SectorMeshInfo(new Vector2(min.x, min.y), radius, 180f, 270f),
+                    new SectorMeshInfo(new Vector2(min.x, max.y), radius, 90f, 180f),
+                    new SectorMeshInfo(new Vector2(max.x, max.y), radius, 0f, 90f),
                 };
                 VertexCount = 0;
                 foreach (var sectorMeshInfo in sectorMeshInfos)
@@ -43,7 +43,7 @@ namespace ColliderMesh
             }
         }
 
-        protected override float2 InnerGetVertex(int index)
+        protected override Vector2 InnerGetVertex(int index)
         {
             if (sectorMeshInfos != null)
             {

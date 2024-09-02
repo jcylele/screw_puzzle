@@ -12,6 +12,8 @@ namespace Item
         protected override string BoxColliderPrefabPath => Consts.BoxColliderPlay;
         protected override string CapsuleColliderPrefabPath => Consts.CapsuleColliderPlay;
         protected override string CircleColliderPrefabPath => Consts.CircleColliderPlay;
+        protected override string PolygonColliderPrefabPath => Consts.PolygonColliderPlay;
+        protected override string BezierColliderPrefabPath => Consts.BezierColliderPlay;
 
         private readonly List<JointPlayBehaviour> jointPlayList = new List<JointPlayBehaviour>();
 

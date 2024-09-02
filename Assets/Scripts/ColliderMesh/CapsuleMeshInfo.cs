@@ -7,7 +7,7 @@ namespace ColliderMesh
 {
     public class CapsuleMeshInfo : BaseMeshInfo
     {
-        public override int VertexCount { get; }
+        public sealed override int VertexCount { get; }
 
         private readonly float2 min;
         private readonly float2 max;
@@ -32,9 +32,9 @@ namespace ColliderMesh
                     max.y -= radius;
 
                     VertexCount = 0;
-                    var topCircle = new SectorMeshInfo(new float2(offset.x, max.y), radius, 0f, 180f);
+                    var topCircle = new SectorMeshInfo(new Vector2(offset.x, max.y), radius, 0f, 180f);
                     VertexCount += topCircle.VertexCount;
-                    var bottomCircle = new SectorMeshInfo(new float2(offset.x, min.y), radius, 180f, 360f);
+                    var bottomCircle = new SectorMeshInfo(new Vector2(offset.x, min.y), radius, 180f, 360f);
                     VertexCount += bottomCircle.VertexCount;
                     sectorMeshInfos = new List<SectorMeshInfo>(2)
                     {
@@ -51,9 +51,9 @@ namespace ColliderMesh
                     max.x -= radius;
 
                     VertexCount = 0;
-                    var leftCircle = new SectorMeshInfo(new float2(min.x, offset.y), radius, 90f, 270f);
+                    var leftCircle = new SectorMeshInfo(new Vector2(min.x, offset.y), radius, 90f, 270f);
                     VertexCount += leftCircle.VertexCount;
-                    var rightCircle = new SectorMeshInfo(new float2(max.x, offset.y), radius, 270f, 90f);
+                    var rightCircle = new SectorMeshInfo(new Vector2(max.x, offset.y), radius, 270f, 90f);
                     VertexCount += rightCircle.VertexCount;
                     sectorMeshInfos = new List<SectorMeshInfo>(2)
                     {
@@ -69,7 +69,7 @@ namespace ColliderMesh
         }
 
 
-        protected override float2 InnerGetVertex(int index)
+        protected override Vector2 InnerGetVertex(int index)
         {
             foreach (var sectorMeshInfo in sectorMeshInfos)
             {

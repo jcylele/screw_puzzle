@@ -1,5 +1,4 @@
-﻿using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ColliderMesh
 {
@@ -18,7 +17,7 @@ namespace ColliderMesh
             sectorMeshInfo = new SectorMeshInfo(center, radius, 0f, 360f);
         }
 
-        protected override float2 InnerGetVertex(int index)
+        protected override Vector2 InnerGetVertex(int index)
         {
             return sectorMeshInfo.GetVertex(index);
         }

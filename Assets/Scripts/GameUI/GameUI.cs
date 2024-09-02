@@ -14,13 +14,19 @@ namespace GameUI
 
         private List<UIScrewBag> bags;
         private List<UIScrewSlot> spareSlots;
+        private bool initialized;
 
         private void Awake()
         {
             Instance = this;
+            initialized = false;
+        }
 
-            bags = new List<UIScrewBag>(Consts.BagCount);
-            for (int i = 0; i < Consts.BagCount; i++)
+        private void Initialize()
+        {
+            var bagCount = Game.Instance.bagCount;
+            bags = new List<UIScrewBag>(bagCount);
+            for (int i = 0; i < bagCount; i++)
             {
                 var bag = Instantiate(uiScrewBagPrefab, bagRoot);
                 bag.Initialize(uiScrewSlotPrefab);
@@ -37,8 +43,14 @@ namespace GameUI
 
         public void Refresh()
         {
+            if (!initialized)
+            {
+                Initialize();
+                initialized = true;
+            }
+
             var gameInstance = Game.Instance;
-            for (int i = 0; i < Consts.BagCount; i++)
+            for (int i = 0; i < gameInstance.bagCount; i++)
             {
                 var bag = gameInstance.GetScrewBag(i);
                 bags[i].Refresh(bag.BagColor, bag.ScrewCount);

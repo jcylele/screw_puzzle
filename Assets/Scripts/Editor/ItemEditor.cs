@@ -58,14 +58,14 @@ namespace Editor
 
                 return;
             }
-            
+
             GUILayout.BeginHorizontal();
-            
+
             if (GUILayout.Button("Generate mesh", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
                 itemEditBehaviour.GenerateMesh();
             }
-            
+
             GUILayout.EndHorizontal();
 
             // item operation buttons
@@ -110,6 +110,22 @@ namespace Editor
             if (GUILayout.Button("Add Circle", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
             {
                 var collider = itemEditBehaviour.AddCircleCollider();
+                Selection.activeObject = collider.gameObject;
+            }
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Add Polygon", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
+            {
+                var collider = itemEditBehaviour.AddPolygonCollider();
+                Selection.activeObject = collider.gameObject;
+            }
+
+            if (GUILayout.Button("Add Bezier", MyEditorStyles.ButtonStyle, MyEditorStyles.BigButtonLayoutOption))
+            {
+                var collider = itemEditBehaviour.AddBezierCollider();
                 Selection.activeObject = collider.gameObject;
             }
 

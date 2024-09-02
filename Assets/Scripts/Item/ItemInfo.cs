@@ -41,6 +41,20 @@ namespace Item
         public float radius;
     }
 
+    [Serializable]
+    public class PolygonColliderInfo : BaseColliderInfo
+    {
+        public Vector2 offset;
+        public Vector2[] path;
+    }
+
+    [Serializable]
+    public class BezierColliderInfo : BaseColliderInfo
+    {
+        public Vector3[] points;
+        public int steps;
+    }
+
     [CreateAssetMenu(fileName = "ItemInfo", menuName = "Screw/ItemInfo", order = 1)]
     public class ItemInfo : ScriptableObject
     {
@@ -48,11 +62,9 @@ namespace Item
         public List<BoxColliderInfo> boxColliders;
         public List<CircleColliderInfo> circleColliders;
 
-        public int GetTotalColliderCount()
-        {
-            return capsuleColliders.Count + boxColliders.Count + circleColliders.Count;
-        }
-        
+        public List<PolygonColliderInfo> polygonColliders;
+        public List<BezierColliderInfo> bezierColliders;
+
         public int GetTotalJointCount()
         {
             var totalJointPointCount = 0;
@@ -60,14 +72,27 @@ namespace Item
             {
                 totalJointPointCount += colliderInfo.jointPoints.Count;
             }
+
             foreach (var colliderInfo in boxColliders)
             {
                 totalJointPointCount += colliderInfo.jointPoints.Count;
             }
+
             foreach (var colliderInfo in circleColliders)
             {
                 totalJointPointCount += colliderInfo.jointPoints.Count;
             }
+
+            foreach (var colliderInfo in polygonColliders)
+            {
+                totalJointPointCount += colliderInfo.jointPoints.Count;
+            }
+
+            foreach (var colliderInfo in bezierColliders)
+            {
+                totalJointPointCount += colliderInfo.jointPoints.Count;
+            }
+
             return totalJointPointCount;
         }
     }

@@ -7,7 +7,7 @@ namespace ColliderMesh
     {
         public abstract int VertexCount { get; }
 
-        protected abstract float2 InnerGetVertex(int index);
+        protected abstract Vector2 InnerGetVertex(int index);
 
         private readonly Matrix4x4 localMatrix;
 
@@ -21,7 +21,7 @@ namespace ColliderMesh
             );
         }
 
-        public float2 GetVertex(int index)
+        public Vector2 GetVertex(int index)
         {
             return this.TransformPoint(this.InnerGetVertex(index));
         }

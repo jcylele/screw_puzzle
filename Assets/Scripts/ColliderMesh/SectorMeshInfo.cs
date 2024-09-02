@@ -8,7 +8,7 @@ namespace ColliderMesh
         // simulate a whole circle with 32 segments  
         private const int CircleVertexCount = 32;
 
-        private readonly float2 center;
+        private readonly Vector2 center;
         private readonly float radius;
         private readonly float endAngle;
         private readonly int segmentCount;
@@ -16,7 +16,7 @@ namespace ColliderMesh
 
         public int VertexCount => segmentCount + 1;
 
-        public SectorMeshInfo(float2 center, float radius, float startAngle, float endAngle)
+        public SectorMeshInfo(Vector2 center, float radius, float startAngle, float endAngle)
         {
             var deltaAngle = endAngle - startAngle;
             if (deltaAngle < 0f || deltaAngle > 360f)
@@ -34,11 +34,11 @@ namespace ColliderMesh
             this.endAngle *= Mathf.Deg2Rad;
         }
 
-        public float2 GetVertex(int index)
+        public Vector2 GetVertex(int index)
         {
             var angel = endAngle - stepAngle * index;
             // Debug.Log($"index: {index}, angel: {angel}");
-            return new float2(
+            return new Vector2(
                 center.x + radius * math.cos(angel),
                 center.y + radius * math.sin(angel)
             );
